@@ -1,0 +1,59 @@
+---
+title: "Capstone Model"
+date: "6/14/2021"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=F}
+library(shiny)
+library(miniUI)
+options(shiny.sanitize.errors = FALSE)
+source("prediction3.R")
+options(rsconnect.max.bundle.size=1000000000)
+ui <-shinyUI(fluidPage(
+  
+  titlePanel("Word Prediction"),
+        
+        sidebarLayout(
+                
+                sidebarPanel(
+                        h4("How it works", style="color:black"),
+                        p("1: You type words into the text box."),
+                        p("2: The algorithm takes your input and predicts the most likely next word."),
+                        p("3: Repeat as many times as you would like with as many combinations as you would like.")
+                        
+                ),
+                
+                mainPanel(
+                       h5("The application will use an n-gram algorithm to predict next word."),
+                        
+                        textInput("text",label=h3("Enter your text here:")),
+                        submitButton('Submit'),
+                        h4('Your text : '),
+                        textOutput("inputValue"),
+                        h4('The prediction:'),
+                        textOutput("prediction")
+                        
+                )
+        )
+))
+
+
+server <- function(input, output) {
+   
+    #create outputs
+ 
+        output$inputValue  <- renderText({input$text})
+        output$prediction <-  renderText({predictNextWord(input$text)})
+    
+}
+
+```
+
+```{r run, echo=F, include=T}
+
+shinyApp(ui = ui, server = server)
+
+```
+
